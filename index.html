@@ -290,7 +290,7 @@
 
   /* ---- plan parcelle ---- */
   .plan-scroll { max-width: 1100px; margin: 0 auto; overflow-x: auto; border-radius: 12px; }
-  #planSvg svg { display: block; width: 100%; min-width: 640px; height: auto; }
+  #planSvg svg { display: block; width: 100%; max-width: 420px; margin: 0 auto; height: auto; }
   .plan-zone { cursor: pointer; transition: opacity .12s; }
   .plan-zone:hover { opacity: .82; }
   .plan-legend { max-width: 1100px; margin: 1rem auto 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: .5rem .9rem; }
@@ -386,7 +386,7 @@
 
   <div class="group-title">Plan de la parcelle · 6 × 20 m</div>
   <p style="max-width:70ch;color:var(--ink-soft);font-size:.92rem;margin:0 0 1rem">
-    Orientée sud-ouest dans la longueur, avec l'abri-toit (tomates) au centre et l'ombre au milieu. Les planches sont disposées pour respecter les associations : les alliacées (oignon/ail) loin des haricots et pois, les solanacées (pommes de terre) loin des tomates centrales, et les légumes qui tolèrent l'ombre placés près de l'abri. Survole une zone pour le détail.
+    D'après ton croquis : sud en haut, nord en bas, entouré par la forêt (gauche), les haies de thuyas et le grillage à haricots (droite). Les patates, le figuier et la butternut occupent le sud ; les courgettes (jaunes, vertes) et l'arbre à papillons la bande centrale ; l'abri-toit à tomates au cœur ; les courgettes rondes et le compost au nord. Reste la grande zone libre au nord à planter. Survole une zone pour le détail.
   </p>
   <div class="plan-scroll">
     <div id="planSvg"></div>
@@ -691,43 +691,49 @@ const ASSO = [
     note:"Comme le haricot : surtout pas d'alliacées à côté. Fixe l'azote, bon précédent pour les gourmandes." },
 ];
 
-// ============ PLAN PARCELLE (6 × 20 m) ============
-// Coordonnées en mètres : x = longueur (0→20, sud-ouest), y = largeur (0→6)
-// L'abri-toit central : x 8.5→11.5 (3 m), pleine largeur. Ombre au milieu.
+// ============ PLAN PARCELLE (vertical : sud en haut, nord en bas) ============
+// x = largeur (0=forêt/gauche → 6=haricots/droite) · y = longueur (0=sud/haut → 20=nord/bas)
 const PLAN = {
-  width: 20, height: 6,
-  shelter: { x:8.5, y:0, w:3, h:6, label:"Abri-toit (tomates + basilic)" },
+  width: 6, height: 20,        // largeur × longueur
+  shelter: { x:0, y:8.5, w:4.5, h:3, label:"Abri-toit (tomates)" },
+  borders: [
+    { side:"left",   c:"#3f5a39", emoji:"🌲", label:"Zone boisée (forêt)" },
+    { side:"top",    c:"#3a5a32", emoji:"🌳", label:"Haie de thuyas (sud)" },
+    { side:"bottom", c:"#4a6b3f", emoji:"🌳", label:"Haie de thuyas (nord)" },
+    { side:"right",  c:"#8a9c46", emoji:"🌿", label:"Grillage à haricots · ouvert, sud-ouest" },
+  ],
   zones: [
-    { x:0,  y:0, w:4,   h:3, c:"#b9542f", emoji:"🥔",
-      nom:"Pommes de terre", sub:"+ haricots, œillets d'Inde",
-      why:"Au bout sud-ouest, le plus loin possible de l'abri à tomates (mildiou partagé)." },
-    { x:0,  y:3, w:4,   h:3, c:"#7a9c46", emoji:"🫘",
-      nom:"Haricots & pois", sub:"sur tuteurs / rames",
-      why:"Avec les pommes de terre (bons amis). Tenus à l'écart des oignons à l'autre bout." },
-    { x:4,  y:0, w:4.5, h:2, c:"#c98a2f", emoji:"🥕",
-      nom:"Carottes", sub:"en rangs alternés avec oignons",
-      why:"Carotte + oignon : protection croisée contre leurs mouches respectives." },
-    { x:4,  y:2, w:4.5, h:2, c:"#9c6b9c", emoji:"🧅",
-      nom:"Oignons, ail, poireaux", sub:"intercalés aux carottes",
-      why:"Placés ici, loin des haricots/pois qu'ils empêcheraient de pousser." },
-    { x:4,  y:4, w:4.5, h:2, c:"#5b8f4e", emoji:"🥬",
-      nom:"Salades & radis", sub:"semis échelonnés",
-      why:"Près de l'ombre centrale : elles montent moins vite en graines l'été." },
-    { x:11.5, y:0, w:4, h:2, c:"#5b8f4e", emoji:"🥬",
-      nom:"Épinards & mâche", sub:"+ laitues d'automne",
-      why:"Côté ombragé de l'abri : feuillage tendre qui n'aime pas le plein cagnard." },
-    { x:11.5, y:2, w:4, h:2.5, c:"#3f7a6a", emoji:"🥦",
-      nom:"Choux & kale", sub:"entourés de thym, sauge",
-      why:"Aromatiques répulsives contre la piéride. Loin des tomates et fraisiers." },
-    { x:11.5, y:4.5, w:4, h:1.5, c:"#b56b8f", emoji:"🍓",
-      nom:"Fraisiers", sub:"+ ail intercalé",
-      why:"L'ail limite la pourriture grise. Vivaces : zone fixe pluriannuelle." },
-    { x:15.5, y:0, w:4.5, h:3, c:"#c97f3f", emoji:"🎃",
-      nom:"Courges & courgettes", sub:"+ maïs, capucines",
-      why:"Au bout nord-est, place pour ramper. Trio courge-maïs-haricot possible." },
-    { x:15.5, y:3, w:4.5, h:3, c:"#8a9c3f", emoji:"🌿",
-      nom:"Aromatiques & fleurs", sub:"bourrache, œillets, capucines",
-      why:"Bande d'auxiliaires : attire pollinisateurs et coccinelles pour tout le potager." },
+    // --- sud (haut) ---
+    { x:0, y:0, w:3.6, h:6, c:"#b9542f", emoji:"🥔",
+      nom:"Patates", sub:"rangées + 2 nouvelles",
+      why:"Grande planche au sud, contre la forêt. Loin de l'abri à tomates (mildiou partagé)." },
+    { x:3.6, y:0, w:2.4, h:4, c:"#6b8e4e", emoji:"🌳",
+      nom:"Figuier", sub:"arbre installé",
+      why:"Côté droit de la zone patates, vers le sud." },
+    { x:3.6, y:4, w:2.4, h:2, c:"#9c8a3f", emoji:"🟤",
+      nom:"Butternut", sub:"courge de garde",
+      why:"Coin sud-est, près du grillage. Récolte avant les gelées." },
+    // --- bande centrale ---
+    { x:0, y:6, w:2.3, h:2.5, c:"#d4b13f", emoji:"🟡",
+      nom:"Courgettes jaunes", sub:"",
+      why:"Bande entre les patates et l'abri." },
+    { x:2.3, y:6, w:1.4, h:2.5, c:"#9c6b9c", emoji:"🦋",
+      nom:"Arbre à papillons", sub:"buddleia",
+      why:"Attire papillons et pollinisateurs au cœur du potager." },
+    { x:3.7, y:6, w:2.3, h:2.5, c:"#c97f3f", emoji:"🥒",
+      nom:"Courgettes", sub:"vertes",
+      why:"À côté de l'arbre à papillons. Aérer les pieds (oïdium)." },
+    // --- abri tomates (y 8.5→11.5), occupe la gauche ; le reste libre à droite ---
+    // --- nord (bas) ---
+    { x:0, y:11.5, w:6, h:3.5, c:"#c97f3f", emoji:"🟢",
+      nom:"Courgettes rondes", sub:"« en dur »",
+      why:"Vers le nord, déjà en place." },
+    { x:0, y:15, w:4.5, h:5, c:"#cfc4ab", emoji:"❓",
+      nom:"Zone libre", sub:"à planter (voir conseils)",
+      why:"Grand espace au nord : idéal pour poireaux + choux d'hiver et des racines." },
+    { x:4.5, y:15, w:1.5, h:5, c:"#7a5230", emoji:"♻️",
+      nom:"Compost", sub:"coin nord-est",
+      why:"Bac à compost dans l'angle nord." },
   ]
 };
 
@@ -927,14 +933,34 @@ function renderAsso(){
 function renderPlan(){
   const host = document.getElementById("planSvg");
   if (host.dataset.done) return;
-  const SC = 46;            // px par mètre
-  const PAD = 34;           // marge pour les cotes
-  const W = PLAN.width*SC + PAD*2, H = PLAN.height*SC + PAD*2;
-  const mx = m => PAD + m*SC, my = m => PAD + m*SC;
+  const SC = 44;            // px par mètre
+  const PAD = 30;           // marge cotes
+  const BW = 22;            // épaisseur des bordures (forêt/haies)
+  const innerX = PAD + BW, innerY = PAD + BW;
+  const W = PLAN.width*SC + PAD*2 + BW*2, H = PLAN.height*SC + PAD*2 + BW*2;
+  const mx = m => innerX + m*SC, my = m => innerY + m*SC;
+  const plotW = PLAN.width*SC, plotH = PLAN.height*SC;
 
   let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace, monospace">`;
+
+  // --- bordures terrain ---
+  const bord = {};
+  PLAN.borders.forEach(b=> bord[b.side]=b);
+  // gauche (forêt) — côté long (20 m)
+  if(bord.left){ svg += `<rect x="${PAD}" y="${innerY}" width="${BW}" height="${plotH}" fill="${bord.left.c}" rx="3"/>`;
+    for(let i=0;i<9;i++) svg += `<text x="${PAD+BW/2}" y="${innerY+26+i*(plotH-30)/8}" text-anchor="middle" font-size="13">${bord.left.emoji}</text>`; }
+  // droite (grillage à haricots, côté ouvert sud-ouest) — pointillé
+  if(bord.right){ svg += `<rect x="${innerX+plotW}" y="${innerY}" width="${BW}" height="${plotH}" fill="${bord.right.c}" fill-opacity="0.4" stroke="#7a7a5a" stroke-width="1.5" stroke-dasharray="3 3" rx="3"/>`;
+    svg += `<text x="${innerX+plotW+BW/2}" y="${innerY+plotH/2}" text-anchor="middle" font-size="9.5" fill="#5c5f4e" transform="rotate(90 ${innerX+plotW+BW/2} ${innerY+plotH/2})">⌗ grillage à haricots (ouvert, sud-ouest) ⌗</text>`; }
+  // haut (thuyas sud) — côté court (6 m)
+  if(bord.top){ svg += `<rect x="${innerX}" y="${PAD}" width="${plotW}" height="${BW}" fill="${bord.top.c}" rx="3"/>`;
+    for(let i=0;i<4;i++) svg += `<text x="${innerX+30+i*(plotW-50)/3}" y="${PAD+BW/2+4}" text-anchor="middle" font-size="12">${bord.top.emoji}</text>`; }
+  // bas (thuyas nord) — côté court (6 m)
+  if(bord.bottom){ svg += `<rect x="${innerX}" y="${innerY+plotH}" width="${plotW}" height="${BW}" fill="${bord.bottom.c}" rx="3"/>`;
+    for(let i=0;i<4;i++) svg += `<text x="${innerX+30+i*(plotW-50)/3}" y="${innerY+plotH+BW/2+4}" text-anchor="middle" font-size="12">${bord.bottom.emoji}</text>`; }
+
   // fond terre
-  svg += `<rect x="${PAD}" y="${PAD}" width="${PLAN.width*SC}" height="${PLAN.height*SC}" fill="#e8dfc9" stroke="#7a5230" stroke-width="2" rx="4"/>`;
+  svg += `<rect x="${innerX}" y="${innerY}" width="${plotW}" height="${plotH}" fill="#e8dfc9" stroke="#7a5230" stroke-width="2" rx="4"/>`;
 
   // zones
   PLAN.zones.forEach((z,i)=>{
@@ -946,7 +972,7 @@ function renderPlan(){
     </g>`;
   });
 
-  // abri-toit central (hachuré + bordure pointillée)
+  // abri-toit central
   const s = PLAN.shelter, sx=mx(s.x), sy=my(s.y), sw=s.w*SC, sh=s.h*SC;
   svg += `<defs><pattern id="roof" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">
     <line x1="0" y1="0" x2="0" y2="10" stroke="#9c3b2e" stroke-width="2" opacity="0.35"/></pattern></defs>`;
@@ -955,34 +981,31 @@ function renderPlan(){
   svg += `<text x="${sx+sw/2}" y="${sy+sh/2+12}" text-anchor="middle" font-size="10.5" fill="#9c3b2e" font-weight="700">ABRI-TOIT</text>`;
   svg += `<text x="${sx+sw/2}" y="${sy+sh/2+26}" text-anchor="middle" font-size="9" fill="#9c3b2e">tomates + basilic</text>`;
 
-  // symbole ombre au milieu (au-dessus de la parcelle)
-  svg += `<text x="${sx+sw/2}" y="${PAD-12}" text-anchor="middle" font-size="13" fill="#5c5f4e">⛅ zone ombragée</text>`;
-
-  // cotes
-  svg += `<text x="${PAD+PLAN.width*SC/2}" y="${H-8}" text-anchor="middle" font-size="12" fill="#5c5f4e">↞ 20 m (longueur, sud-ouest) ↠</text>`;
-  svg += `<text x="14" y="${PAD+PLAN.height*SC/2}" text-anchor="middle" font-size="12" fill="#5c5f4e" transform="rotate(-90 14 ${PAD+PLAN.height*SC/2})">↞ 6 m ↠</text>`;
-  // boussole
-  svg += `<text x="${PAD+8}" y="${PAD-12}" font-size="11" fill="#9c3b2e" font-weight="700">SO ↙</text>`;
-  svg += `<text x="${W-PAD-8}" y="${PAD-12}" text-anchor="end" font-size="11" fill="#5c5f4e">↗ NE</text>`;
+  // boussole : sud en haut, nord en bas
+  svg += `<text x="${innerX+plotW/2}" y="${PAD-10}" text-anchor="middle" font-size="12" fill="#9c3b2e" font-weight="700">☀ SUD</text>`;
+  svg += `<text x="${innerX+plotW/2}" y="${H-6}" text-anchor="middle" font-size="11" fill="#5c5f4e">NORD · 20 m ↕</text>`;
 
   svg += `</svg>`;
   host.innerHTML = svg;
 
-  // légende détaillée + interaction
+  // légende : éléments fixes + zones cultivées
   const leg = document.getElementById("planLegend");
-  leg.innerHTML = PLAN.zones.map((z,i)=>`
+  const bordersHTML = PLAN.borders.map(b=>`
+    <div class="lz">
+      <span class="sw" style="background:${b.c}"></span>
+      <span><b>${b.emoji} ${b.label}</b><small>élément fixe du terrain</small></span>
+    </div>`).join("");
+  const zonesHTML = PLAN.zones.map((z,i)=>`
     <div class="lz" data-i="${i}">
       <span class="sw" style="background:${z.c}"></span>
       <span><b>${z.emoji} ${z.nom}</b><small>${z.why}</small></span>
     </div>`).join("");
+  leg.innerHTML = bordersHTML + zonesHTML;
 
-  // surbrillance croisée
   host.querySelectorAll(".plan-zone").forEach(zone=>{
     const i = zone.dataset.i;
-    const showTip = ()=>{ const lz = leg.querySelector(`.lz[data-i="${i}"]`); if(lz) lz.style.background="rgba(122,82,48,.1)"; };
-    const hideTip = ()=>{ const lz = leg.querySelector(`.lz[data-i="${i}"]`); if(lz) lz.style.background=""; };
-    zone.addEventListener("mouseenter", showTip);
-    zone.addEventListener("mouseleave", hideTip);
+    zone.addEventListener("mouseenter", ()=>{ const lz=leg.querySelector(`.lz[data-i="${i}"]`); if(lz)lz.style.background="rgba(122,82,48,.1)"; });
+    zone.addEventListener("mouseleave", ()=>{ const lz=leg.querySelector(`.lz[data-i="${i}"]`); if(lz)lz.style.background=""; });
   });
   host.dataset.done = "1";
 }
