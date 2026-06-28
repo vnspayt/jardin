@@ -250,6 +250,55 @@
   .soin li { font-size: .9rem; margin-bottom: .45rem; line-height: 1.4; }
   .soin li::marker { color: var(--repiquage); }
 
+  /* ---- compagnonnage ---- */
+  .asso-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 1rem; }
+  .asso {
+    background: rgba(255,255,255,.4); border: 1px solid var(--line);
+    border-radius: 12px; overflow: hidden; cursor: pointer;
+    transition: box-shadow .12s, transform .12s;
+  }
+  .asso:hover { box-shadow: 0 4px 14px rgba(47,53,40,.1); }
+  .asso .head {
+    display: flex; align-items: center; gap: .6rem;
+    padding: .85rem 1rem; background: rgba(79,117,68,.1);
+    font-size: 1.15rem; font-weight: 700;
+  }
+  .asso .head .emoji { font-size: 1.5rem; }
+  .asso .head .chev { margin-left: auto; transition: transform .15s; color: var(--ink-soft); font-size: .9rem; }
+  .asso.open .head .chev { transform: rotate(90deg); }
+  .asso .body { display: none; padding: .3rem 1rem 1rem; }
+  .asso.open .body { display: block; }
+  .asso .col { margin-top: .8rem; }
+  .asso .col h4 {
+    margin: 0 0 .4rem; font-size: .82rem; font-family: ui-monospace, monospace;
+    text-transform: uppercase; letter-spacing: .06em; display: flex; align-items: center; gap: .4rem;
+  }
+  .asso .col.good h4 { color: var(--repiquage); }
+  .asso .col.bad h4 { color: var(--now); }
+  .asso .tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+  .asso .tag { font-size: .82rem; padding: .25rem .6rem; border-radius: 20px; }
+  .asso .col.good .tag { background: var(--repiquage-bg); color: #2f4a28; border: 1px solid #b6cda8; }
+  .asso .col.bad .tag { background: #f0d4ce; color: #7a2418; border: 1px solid #d9a99f; }
+  .asso .note { margin: .9rem 0 0; font-size: .85rem; color: var(--ink-soft); font-style: italic; line-height: 1.4; border-top: 1px dashed var(--line); padding-top: .7rem; }
+  .asso-tools { max-width: 1100px; margin: 0 auto 1rem; display: flex; gap: .6rem; }
+  .asso-tools button {
+    font-family: ui-monospace, monospace; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em;
+    background: transparent; border: 1px solid var(--terre); color: var(--terre);
+    padding: .45rem .8rem; border-radius: 6px; cursor: pointer;
+  }
+  .asso-tools button:hover { background: var(--terre); color: var(--paper); }
+
+  /* ---- plan parcelle ---- */
+  .plan-scroll { max-width: 1100px; margin: 0 auto; overflow-x: auto; border-radius: 12px; }
+  #planSvg svg { display: block; width: 100%; min-width: 640px; height: auto; }
+  .plan-zone { cursor: pointer; transition: opacity .12s; }
+  .plan-zone:hover { opacity: .82; }
+  .plan-legend { max-width: 1100px; margin: 1rem auto 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: .5rem .9rem; }
+  .plan-legend .lz { display: flex; gap: .55rem; align-items: flex-start; font-size: .86rem; }
+  .plan-legend .sw { width: 1.1rem; height: 1.1rem; border-radius: 4px; flex-shrink: 0; margin-top: .15rem; border: 1px solid rgba(0,0,0,.15); }
+  .plan-legend .lz b { display: block; }
+  .plan-legend .lz small { color: var(--ink-soft); }
+
   @media (max-width: 560px) {
     .legend { gap: .8rem; }
     .lede { font-size: .98rem; }
@@ -268,6 +317,7 @@
   <button class="tab" role="tab" aria-selected="true" id="tab-cal" data-panel="panel-cal">Calendrier de plantation</button>
   <button class="tab" role="tab" aria-selected="false" id="tab-moon" data-panel="panel-moon">Calendrier lunaire</button>
   <button class="tab" role="tab" aria-selected="false" id="tab-soin" data-panel="panel-soin">Maladies & soins naturels</button>
+  <button class="tab" role="tab" aria-selected="false" id="tab-asso" data-panel="panel-asso">Bonnes & mauvaises alliances</button>
 </div>
 
 <section class="panel" id="panel-cal" role="tabpanel" aria-labelledby="tab-cal">
@@ -328,6 +378,31 @@
     <p><strong>Tourner les cultures</strong> — ne jamais remettre la même famille (tomates, choux…) au même endroit avant 3-4 ans.</p>
     <p><strong>Nourrir le sol, pas la plante</strong> — compost, paillage, et plantes compagnes attirent les auxiliaires (coccinelles, syrphes) qui font le travail à ta place.</p>
     <p style="font-size:.84rem;opacity:.8;margin-top:.8rem;">Même « naturel », un traitement reste un traitement : le purin d'ortie, le savon noir ou la bouillie bordelaise s'utilisent avec modération. La bouillie bordelaise (à base de cuivre) est tolérée en bio mais s'accumule dans le sol — à réserver aux cas sérieux.</p>
+  </div>
+</section>
+
+<section class="panel" id="panel-asso" role="tabpanel" aria-labelledby="tab-asso" hidden>
+  <p class="lede" style="max-width:66ch;margin-bottom:1.4rem">Certaines plantes s'entraident (protection contre les ravageurs, ombre, azote partagé) et d'autres se nuisent (concurrence, maladies communes, croissance freinée). Voici un plan adapté à ta parcelle, puis les alliances détaillées légume par légume.</p>
+
+  <div class="group-title">Plan de la parcelle · 6 × 20 m</div>
+  <p style="max-width:70ch;color:var(--ink-soft);font-size:.92rem;margin:0 0 1rem">
+    Orientée sud-ouest dans la longueur, avec l'abri-toit (tomates) au centre et l'ombre au milieu. Les planches sont disposées pour respecter les associations : les alliacées (oignon/ail) loin des haricots et pois, les solanacées (pommes de terre) loin des tomates centrales, et les légumes qui tolèrent l'ombre placés près de l'abri. Survole une zone pour le détail.
+  </p>
+  <div class="plan-scroll">
+    <div id="planSvg"></div>
+  </div>
+  <div class="plan-legend" id="planLegend"></div>
+
+  <div class="group-title" style="margin-top:2.4rem">Alliances détaillées</div>
+  <div class="asso-grid" id="assoGrid"></div>
+
+  <div class="note" style="border-left-color:var(--repiquage)">
+    <h3>Les grands principes du compagnonnage</h3>
+    <p><strong>Carotte & oignon, le duo star :</strong> l'odeur de l'oignon (et poireau, ail) brouille la mouche de la carotte, et celle de la carotte repousse la mouche de l'oignon. Gagnant-gagnant.</p>
+    <p><strong>Évite de coller les « cousins » :</strong> deux plantes de la même famille (ex. tomate + pomme de terre, toutes deux solanacées) partagent les mêmes maladies — comme le mildiou — et se les transmettent.</p>
+    <p><strong>Les aromatiques sont presque toujours utiles :</strong> basilic, thym, romarin, ciboulette repoussent quantité d'insectes. Glisse-les un peu partout.</p>
+    <p><strong>Les fleurs aussi :</strong> œillet d'Inde (nématodes, pucerons), capucine (plante-piège à pucerons), bourrache (attire les pollinisateurs). À semer entre les rangs.</p>
+    <p style="font-size:.84rem;opacity:.8;margin-top:.8rem;">Le compagnonnage est un savoir empirique de jardinier : très utile en pratique, mais toutes les associations ne sont pas validées scientifiquement. À prendre comme un guide, pas une loi.</p>
   </div>
 </section>
 
@@ -501,7 +576,162 @@ const SOINS = [
       "Décaler les semis hors des pics de vol (mai et août)."
     ]
   },
+  {
+    nom: "Tavelure", cible: "Pommier, poirier",
+    type: "Champignon (arbre fruitier)",
+    signes: "Taches brun-olive à noires sur feuilles et fruits, qui se crevassent et se déforment. Fréquent par printemps doux et humide — typique en Normandie.",
+    naturel: [
+      "Ramasser et évacuer les feuilles mortes en automne (le champignon y hiverne).",
+      "Tailler pour aérer le cœur de l'arbre : l'air qui circule = feuillage qui sèche vite.",
+      "Décoction de prêle pulvérisée au printemps, dès le débourrement.",
+      "Choisir des variétés résistantes à la plantation (ex. Reinette, Topaz).",
+      "Bouillie bordelaise à faible dose en dernier recours, à la chute des feuilles."
+    ]
+  },
+  {
+    nom: "Cloque du pêcher", cible: "Pêcher, nectarinier",
+    type: "Champignon (arbre fruitier)",
+    signes: "Feuilles boursouflées, gondolées, rouges puis blanchâtres au printemps, qui finissent par tomber. Affaiblit l'arbre durablement.",
+    naturel: [
+      "Pulvériser de la décoction de prêle ou une infusion d'ail dès la fin de l'hiver, avant l'ouverture des bourgeons.",
+      "Planter de l'ail ou des capucines au pied de l'arbre (effet préventif traditionnel).",
+      "Retirer et brûler les feuilles atteintes.",
+      "Éviter d'arroser le feuillage.",
+      "Badigeon d'argile ou bouillie bordelaise au débourrement si l'arbre est très sensible."
+    ]
+  },
+  {
+    nom: "Moniliose (pourriture des fruits)", cible: "Cerisier, prunier, pêcher, pommier",
+    type: "Champignon (arbre fruitier)",
+    signes: "Fruits qui brunissent, pourrissent et se momifient en restant accrochés à l'arbre. Cercles de spores beiges concentriques.",
+    naturel: [
+      "Retirer TOUS les fruits momifiés (sur l'arbre et au sol) : ils sont la source de contamination.",
+      "Tailler les rameaux atteints (chancres) bien en dessous de la zone malade.",
+      "Aérer la ramure par la taille.",
+      "Décoction de prêle au printemps.",
+      "Éviter de blesser les fruits (les plaies sont des portes d'entrée)."
+    ]
+  },
+  {
+    nom: "Pucerons & fourmis", cible: "Tous arbres fruitiers, jeunes pousses",
+    type: "Ravageur (arbre fruitier)",
+    signes: "Feuilles enroulées et collantes (miellat), jeunes pousses déformées, fourmis qui montent le long du tronc pour « élever » les pucerons.",
+    naturel: [
+      "Bande de glu ou collier autour du tronc au printemps : bloque les fourmis qui protègent les pucerons.",
+      "Savon noir dilué en pulvérisation sur les colonies.",
+      "Favoriser les coccinelles : ne pas tout traiter, laisser des fleurs et des haies.",
+      "Purin d'ortie dilué en répulsif.",
+      "Nichoirs à mésanges : un couple nourrit ses petits de milliers de pucerons et chenilles."
+    ]
+  },
+  {
+    nom: "Carpocapse (ver des fruits)", cible: "Pommier, poirier, noyer",
+    type: "Ravageur (arbre fruitier)",
+    signes: "Petit trou avec sciure sur le fruit, galerie jusqu'au cœur, fruits véreux qui tombent prématurément. C'est le fameux « ver de la pomme ».",
+    naturel: [
+      "Pièges à phéromones dès mai-juin pour repérer et limiter les vols de papillons.",
+      "Bandes de carton ondulé autour du tronc : les larves s'y réfugient, on les retire et brûle.",
+      "Ramasser régulièrement les fruits tombés.",
+      "Favoriser mésanges et chauves-souris (nichoirs).",
+      "Filet à mailles fines sur petits arbres, ou virus de la granulose (autorisé en bio)."
+    ]
+  },
 ];
+
+// ============ COMPAGNONNAGE ============
+// {legume, emoji, amis:[...], ennemis:[...], note}
+const ASSO = [
+  { legume:"Tomate", emoji:"🍅",
+    amis:["Basilic (goût + repousse mouches)","Œillet d'Inde","Carotte","Persil","Ail, oignon","Capucine (piège à pucerons)","Ciboulette"],
+    ennemis:["Pomme de terre (même mildiou !)","Chou","Fenouil","Concombre","Maïs"],
+    note:"Le basilic à ses pieds est l'association reine. Jamais à côté des pommes de terre." },
+  { legume:"Carotte", emoji:"🥕",
+    amis:["Oignon, poireau, ail (anti-mouche)","Radis","Laitue","Poireau","Tomate","Romarin, sauge"],
+    ennemis:["Aneth","Persil","Céleri (cousins, mêmes ravageurs)"],
+    note:"Carotte + oignon = la protection croisée la plus connue contre leurs mouches respectives." },
+  { legume:"Pomme de terre", emoji:"🥔",
+    amis:["Haricot","Chou","Maïs","Ail","Capucine, œillet d'Inde","Raifort (renforce)"],
+    ennemis:["Tomate (mildiou partagé)","Concombre, courge","Tournesol","Céleri"],
+    note:"Éloigne-la des tomates : ce sont des solanacées, elles s'échangent le mildiou." },
+  { legume:"Courgette / courge", emoji:"🎃",
+    amis:["Maïs","Haricot","Capucine","Bourrache (pollinisateurs)","Œillet d'Inde"],
+    ennemis:["Pomme de terre","Concombre (oïdium partagé)"],
+    note:"Le trio amérindien maïs + haricot + courge fonctionne très bien ensemble." },
+  { legume:"Haricot", emoji:"🫘",
+    amis:["Carotte","Courgette, courge","Maïs (tuteur naturel)","Laitue","Pomme de terre","Sarriette (anti-puceron)"],
+    ennemis:["Oignon, ail, échalote, poireau","Fenouil"],
+    note:"Les alliacées (oignon, ail) bloquent la croissance des haricots et des pois. À séparer absolument." },
+  { legume:"Salade / laitue", emoji:"🥬",
+    amis:["Carotte","Radis","Concombre","Fraisier","Betterave","Aneth"],
+    ennemis:["Persil","Tournesol","Céleri (concurrence)"],
+    note:"Pousse vite, idéale pour combler les espaces entre des cultures lentes (choux, poireaux)." },
+  { legume:"Chou (& kale, brocoli)", emoji:"🥦",
+    amis:["Aromatiques répulsives : thym, romarin, sauge, menthe","Céleri","Betterave","Capucine, œillet d'Inde","Aneth"],
+    ennemis:["Tomate","Fraisier","Oignon, ail","Haricot à rames"],
+    note:"Entoure les choux d'aromatiques odorantes : elles désorientent la piéride (papillon blanc)." },
+  { legume:"Oignon / ail / poireau", emoji:"🧅",
+    amis:["Carotte (anti-mouche réciproque)","Betterave","Fraisier","Tomate","Laitue","Camomille"],
+    ennemis:["Haricot, pois (croissance freinée)","Chou","Asperge"],
+    note:"Excellents protecteurs grâce à leur odeur, sauf pour les légumineuses qu'ils inhibent." },
+  { legume:"Concombre", emoji:"🥒",
+    amis:["Haricot","Laitue","Maïs","Aneth","Bourrache","Tournesol (tuteur)"],
+    ennemis:["Pomme de terre","Courge (oïdium)","Aromatiques fortes (sauge)"],
+    note:"Aime grimper : associe-le au maïs ou au tournesol qui lui servent de support." },
+  { legume:"Fraisier", emoji:"🍓",
+    amis:["Ail, oignon (anti-maladie)","Laitue","Épinard","Bourrache","Thym","Capucine"],
+    ennemis:["Chou","Tomate"],
+    note:"L'ail planté entre les fraisiers limite la pourriture grise. Paille bien le pied." },
+  { legume:"Betterave", emoji:"🟣",
+    amis:["Oignon","Laitue","Chou","Haricot nain","Aneth"],
+    ennemis:["Haricot à rames","Poireau","Épinard (concurrence)"],
+    note:"Plutôt accommodante. Évite juste les haricots grimpants." },
+  { legume:"Pois", emoji:"🟢",
+    amis:["Carotte","Radis","Concombre","Maïs","Navet","Laitue"],
+    ennemis:["Oignon, ail, échalote, poireau","Tomate"],
+    note:"Comme le haricot : surtout pas d'alliacées à côté. Fixe l'azote, bon précédent pour les gourmandes." },
+];
+
+// ============ PLAN PARCELLE (6 × 20 m) ============
+// Coordonnées en mètres : x = longueur (0→20, sud-ouest), y = largeur (0→6)
+// L'abri-toit central : x 8.5→11.5 (3 m), pleine largeur. Ombre au milieu.
+const PLAN = {
+  width: 20, height: 6,
+  shelter: { x:8.5, y:0, w:3, h:6, label:"Abri-toit (tomates + basilic)" },
+  zones: [
+    { x:0,  y:0, w:4,   h:3, c:"#b9542f", emoji:"🥔",
+      nom:"Pommes de terre", sub:"+ haricots, œillets d'Inde",
+      why:"Au bout sud-ouest, le plus loin possible de l'abri à tomates (mildiou partagé)." },
+    { x:0,  y:3, w:4,   h:3, c:"#7a9c46", emoji:"🫘",
+      nom:"Haricots & pois", sub:"sur tuteurs / rames",
+      why:"Avec les pommes de terre (bons amis). Tenus à l'écart des oignons à l'autre bout." },
+    { x:4,  y:0, w:4.5, h:2, c:"#c98a2f", emoji:"🥕",
+      nom:"Carottes", sub:"en rangs alternés avec oignons",
+      why:"Carotte + oignon : protection croisée contre leurs mouches respectives." },
+    { x:4,  y:2, w:4.5, h:2, c:"#9c6b9c", emoji:"🧅",
+      nom:"Oignons, ail, poireaux", sub:"intercalés aux carottes",
+      why:"Placés ici, loin des haricots/pois qu'ils empêcheraient de pousser." },
+    { x:4,  y:4, w:4.5, h:2, c:"#5b8f4e", emoji:"🥬",
+      nom:"Salades & radis", sub:"semis échelonnés",
+      why:"Près de l'ombre centrale : elles montent moins vite en graines l'été." },
+    { x:11.5, y:0, w:4, h:2, c:"#5b8f4e", emoji:"🥬",
+      nom:"Épinards & mâche", sub:"+ laitues d'automne",
+      why:"Côté ombragé de l'abri : feuillage tendre qui n'aime pas le plein cagnard." },
+    { x:11.5, y:2, w:4, h:2.5, c:"#3f7a6a", emoji:"🥦",
+      nom:"Choux & kale", sub:"entourés de thym, sauge",
+      why:"Aromatiques répulsives contre la piéride. Loin des tomates et fraisiers." },
+    { x:11.5, y:4.5, w:4, h:1.5, c:"#b56b8f", emoji:"🍓",
+      nom:"Fraisiers", sub:"+ ail intercalé",
+      why:"L'ail limite la pourriture grise. Vivaces : zone fixe pluriannuelle." },
+    { x:15.5, y:0, w:4.5, h:3, c:"#c97f3f", emoji:"🎃",
+      nom:"Courges & courgettes", sub:"+ maïs, capucines",
+      why:"Au bout nord-est, place pour ramper. Trio courge-maïs-haricot possible." },
+    { x:15.5, y:3, w:4.5, h:3, c:"#8a9c3f", emoji:"🌿",
+      nom:"Aromatiques & fleurs", sub:"bourrache, œillets, capucines",
+      why:"Bande d'auxiliaires : attire pollinisateurs et coccinelles pour tout le potager." },
+  ]
+};
+
+// ============ MOTEUR LUNAIRE ============
 const SYNODIC = 29.530588853;       // lunaison (croissant/décroissant)
 const SIDEREAL = 27.321661;         // mois sidéral (montante/descendante & zodiaque)
 const NEW_MOON_REF = 2451550.1;     // JD nouvelle lune réf. (2000-01-06)
@@ -668,7 +898,94 @@ function renderSoins(){
   g.dataset.done = "1";
 }
 
-// ============ ONGLETS ============
+// ============ COMPAGNONNAGE ============
+function renderAsso(){
+  const g = document.getElementById("assoGrid");
+  if (g.dataset.done) return;
+  g.innerHTML = ASSO.map((a,i)=>`
+    <div class="asso" data-i="${i}">
+      <div class="head"><span class="emoji">${a.emoji}</span>${a.legume}<span class="chev">▶</span></div>
+      <div class="body">
+        <div class="col good">
+          <h4>✓ À planter avec</h4>
+          <div class="tags">${a.amis.map(x=>`<span class="tag">${x}</span>`).join("")}</div>
+        </div>
+        <div class="col bad">
+          <h4>✗ À ne surtout pas associer</h4>
+          <div class="tags">${a.ennemis.map(x=>`<span class="tag">${x}</span>`).join("")}</div>
+        </div>
+        <p class="note">${a.note}</p>
+      </div>
+    </div>`).join("");
+  g.querySelectorAll(".asso").forEach(card=>{
+    card.querySelector(".head").addEventListener("click", ()=> card.classList.toggle("open"));
+  });
+  g.dataset.done = "1";
+}
+
+// ============ PLAN PARCELLE ============
+function renderPlan(){
+  const host = document.getElementById("planSvg");
+  if (host.dataset.done) return;
+  const SC = 46;            // px par mètre
+  const PAD = 34;           // marge pour les cotes
+  const W = PLAN.width*SC + PAD*2, H = PLAN.height*SC + PAD*2;
+  const mx = m => PAD + m*SC, my = m => PAD + m*SC;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace, monospace">`;
+  // fond terre
+  svg += `<rect x="${PAD}" y="${PAD}" width="${PLAN.width*SC}" height="${PLAN.height*SC}" fill="#e8dfc9" stroke="#7a5230" stroke-width="2" rx="4"/>`;
+
+  // zones
+  PLAN.zones.forEach((z,i)=>{
+    const x=mx(z.x), y=my(z.y), w=z.w*SC, h=z.h*SC;
+    svg += `<g class="plan-zone" data-i="${i}">
+      <rect x="${x+2}" y="${y+2}" width="${w-4}" height="${h-4}" fill="${z.c}" fill-opacity="0.82" stroke="${z.c}" stroke-width="1.5" rx="5"/>
+      <text x="${x+w/2}" y="${y+h/2-6}" text-anchor="middle" font-size="20">${z.emoji}</text>
+      <text x="${x+w/2}" y="${y+h/2+12}" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">${z.nom}</text>
+    </g>`;
+  });
+
+  // abri-toit central (hachuré + bordure pointillée)
+  const s = PLAN.shelter, sx=mx(s.x), sy=my(s.y), sw=s.w*SC, sh=s.h*SC;
+  svg += `<defs><pattern id="roof" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">
+    <line x1="0" y1="0" x2="0" y2="10" stroke="#9c3b2e" stroke-width="2" opacity="0.35"/></pattern></defs>`;
+  svg += `<rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" fill="url(#roof)" stroke="#9c3b2e" stroke-width="2.5" stroke-dasharray="7 4" rx="4"/>`;
+  svg += `<text x="${sx+sw/2}" y="${sy+sh/2-8}" text-anchor="middle" font-size="22">🍅</text>`;
+  svg += `<text x="${sx+sw/2}" y="${sy+sh/2+12}" text-anchor="middle" font-size="10.5" fill="#9c3b2e" font-weight="700">ABRI-TOIT</text>`;
+  svg += `<text x="${sx+sw/2}" y="${sy+sh/2+26}" text-anchor="middle" font-size="9" fill="#9c3b2e">tomates + basilic</text>`;
+
+  // symbole ombre au milieu (au-dessus de la parcelle)
+  svg += `<text x="${sx+sw/2}" y="${PAD-12}" text-anchor="middle" font-size="13" fill="#5c5f4e">⛅ zone ombragée</text>`;
+
+  // cotes
+  svg += `<text x="${PAD+PLAN.width*SC/2}" y="${H-8}" text-anchor="middle" font-size="12" fill="#5c5f4e">↞ 20 m (longueur, sud-ouest) ↠</text>`;
+  svg += `<text x="14" y="${PAD+PLAN.height*SC/2}" text-anchor="middle" font-size="12" fill="#5c5f4e" transform="rotate(-90 14 ${PAD+PLAN.height*SC/2})">↞ 6 m ↠</text>`;
+  // boussole
+  svg += `<text x="${PAD+8}" y="${PAD-12}" font-size="11" fill="#9c3b2e" font-weight="700">SO ↙</text>`;
+  svg += `<text x="${W-PAD-8}" y="${PAD-12}" text-anchor="end" font-size="11" fill="#5c5f4e">↗ NE</text>`;
+
+  svg += `</svg>`;
+  host.innerHTML = svg;
+
+  // légende détaillée + interaction
+  const leg = document.getElementById("planLegend");
+  leg.innerHTML = PLAN.zones.map((z,i)=>`
+    <div class="lz" data-i="${i}">
+      <span class="sw" style="background:${z.c}"></span>
+      <span><b>${z.emoji} ${z.nom}</b><small>${z.why}</small></span>
+    </div>`).join("");
+
+  // surbrillance croisée
+  host.querySelectorAll(".plan-zone").forEach(zone=>{
+    const i = zone.dataset.i;
+    const showTip = ()=>{ const lz = leg.querySelector(`.lz[data-i="${i}"]`); if(lz) lz.style.background="rgba(122,82,48,.1)"; };
+    const hideTip = ()=>{ const lz = leg.querySelector(`.lz[data-i="${i}"]`); if(lz) lz.style.background=""; };
+    zone.addEventListener("mouseenter", showTip);
+    zone.addEventListener("mouseleave", hideTip);
+  });
+  host.dataset.done = "1";
+}
 document.querySelectorAll('.tab').forEach(tab=>{
   tab.addEventListener('click', ()=>{
     document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected','false'));
@@ -677,6 +994,7 @@ document.querySelectorAll('.tab').forEach(tab=>{
     document.getElementById(tab.dataset.panel).hidden = false;
     if (tab.dataset.panel === 'panel-moon') renderMoon();
     if (tab.dataset.panel === 'panel-soin') renderSoins();
+    if (tab.dataset.panel === 'panel-asso') { renderAsso(); renderPlan(); }
   });
 });
 
